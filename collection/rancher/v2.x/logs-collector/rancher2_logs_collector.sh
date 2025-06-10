@@ -301,6 +301,14 @@ networking() {
   if $(command -v ifconfig >/dev/null 2>&1); then
     ifconfig -a > $TMPDIR/networking/ifconfiga
   fi
+  if $(command -v ethtool >/dev/null 2>&1); then
+     for i in $(basename -a /sys/class/net/*); 
+         do ethtool -k $i > $TMPDIR/networking/ethtool-$i; done
+  fi
+  if  $(command -v conntrack >/dev/null 2>&1); then
+     conntrack -L > $TMPDIR/networking/conntracklist 2>&1
+     conntrack -S > $TMPDIR/networking/conntrackinsertfailed 2>&1
+  fi   
   if $(command -v ss >/dev/null 2>&1); then
     ss -anp > $TMPDIR/networking/ssanp 2>&1
     ss -itan > $TMPDIR/networking/ssitan 2>&1
